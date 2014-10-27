@@ -30,6 +30,7 @@ Parse.Cloud.define("placeSearch", function(request, response) {
   });
 });
 
+
 /*
  * Provides autocomplete suggestions for Places 
  */
@@ -40,7 +41,7 @@ Parse.Cloud.define("placeAutocomplete", function(request, response) {
   var query = new Parse.Query("Place");
   query.limit(200);
   query.include("parentPlace");
-  query.select("name");
+  query.select("name", "symbol");
 
   query.find({
     success: function(results) {
@@ -59,16 +60,18 @@ Parse.Cloud.define("placeAutocomplete", function(request, response) {
   });
 });
 
+
+/*
+ * Provides autocomplete suggestions for Sections 
+ */
 Parse.Cloud.define("courseAutocomplete", function(request, response) {
   console.log("Search Query: " + request.params.query);
 
   // Define Parse cloud query that retrieves all Place objects and matches them to a search
   var query = new Parse.Query("Course");
-  query.limit(200);
-  query.select("name");
+  query.limit(200); // Change for production
 
-  query.find({
-    success: function(results) {
+  query.find().then(function(results) {
       matches = []
       // TODO(john): Python code needs to go away
       // for result in results:
